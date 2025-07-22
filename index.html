@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura de Cotización - Radiant Events</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #e5e7eb;
+            color: #2d2d2d;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .accent-gold { color: #c59d5f; }
+        .brand-divider { height: 2px; width: 80px; background-color: #c59d5f; margin: 1rem auto; }
+        .section-card { background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        [contenteditable="true"] { outline: 2px dashed transparent; transition: outline 0.3s; }
+        [contenteditable="true"]:focus { outline: 2px dashed #c59d5f; }
+
+        /* Styles for printing */
+        @media print {
+            body {
+                background-color: #ffffff;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .section-card {
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Main Quote Content -->
+        <div id="quote-content" class="section-card p-8 sm:p-12">
+            <!-- Header Section -->
+            <header class="grid grid-cols-1 sm:grid-cols-2 gap-8 pb-8 border-b border-gray-200">
+                <div class="w-48">
+                    <img src="logo.png" alt="Logo de Radiant Events" class="w-full h-auto" onerror="this.onerror=null;this.src='https://placehold.co/192x108/e8e8e8/c59d5f?text=RE';">
+                </div>
+                <div class="text-left sm:text-right text-sm text-gray-700">
+                    <h2 class="text-2xl">Radiant Events</h2>
+                    <p class="mt-1">Hacemos brillar tus momentos especiales</p>
+                    <div class="mt-4">
+                        <p><i class="fab fa-whatsapp accent-gold mr-2"></i>3118702631</p>
+                        <p><i class="fas fa-envelope accent-gold mr-2"></i>radiantevents0@gmail.com</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Quote Details & Client Info -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
+                <div>
+                    <h1 class="text-3xl mb-2">FACTURA DE COTIZACIÓN</h1>
+                    <div class="text-sm text-gray-600">
+                        <p><span class="font-semibold">Fecha:</span> <span id="quote-date" contenteditable="true"></span></p>
+                        <p><span class="font-semibold">Cotización #:</span> <span contenteditable="true">2025-001</span></p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="font-bold text-gray-800 mb-2 text-lg">CLIENTE:</h3>
+                    <div class="text-sm text-gray-700" contenteditable="true">
+                        <p>[Nombre del Cliente]</p>
+                        <p>[Nombre de la Empresa]</p>
+                        <p>[Teléfono del Cliente]</p>
+                        <p>[Email del Cliente]</p>
+                        <p>[Fecha del Evento]</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Table -->
+            <section class="mt-12">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl">Detalles del Servicio</h3>
+                    <div class="flex gap-2 no-print">
+                        <button id="add-row" class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-3 rounded-lg text-sm shadow-md transition-colors duration-300">Añadir Fila</button>
+                        <button id="add-category" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-3 rounded-lg text-sm shadow-md transition-colors duration-300">Añadir Categoría</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="min-w-full text-sm" id="services-table">
+                        <thead class="bg-gray-700 text-white">
+                            <tr>
+                                <th class="px-6 py-3 text-left font-semibold uppercase tracking-wider">Descripción</th>
+                                <th class="px-6 py-3 text-right font-semibold uppercase tracking-wider">Cantidad</th>
+                                <th class="px-6 py-3 text-right font-semibold uppercase tracking-wider">Precio Unitario</th>
+                                <th class="px-6 py-3 text-right font-semibold uppercase tracking-wider">Total</th>
+                                <th class="px-2 py-3 text-center font-semibold uppercase tracking-wider no-print"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <!-- Rows will be dynamically managed -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Financial Summary -->
+            <section class="mt-8 flex justify-end">
+                <div class="w-full sm:w-2/3 md:w-1/2 lg:w-2/5 space-y-3">
+                    <div class="flex justify-between text-gray-700">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">$0</span>
+                    </div>
+                    <hr class="my-2 border-gray-300">
+                    <div class="flex justify-between font-bold text-xl text-gray-900">
+                        <span class="font-sans">TOTAL (COP):</span>
+                        <span id="total">$0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Terms and Conditions -->
+            <footer class="mt-12 pt-8 border-t border-gray-200 text-xs text-gray-500">
+                <h4 class="font-bold text-sm text-gray-800 mb-2">Términos y Condiciones</h4>
+                <ol class="list-decimal list-inside space-y-1">
+                    <li>Esta cotización es válida por 15 días. Los precios no incluyen transporte.</li>
+                    <li>Se requiere un anticipo del 50% para confirmar la reserva. El 50% restante deberá ser cancelado 3 días hábiles antes de la fecha del evento.</li>
+                    <li>Política de cancelación: Reembolso del 100% con más de 30 días de antelación. Penalidad del 25% entre 15 y 30 días. Sin reembolso con menos de 15 días.</li>
+                </ol>
+                <div class="text-center mt-8">
+                    <div class="brand-divider"></div>
+                    <p class="font-bold text-gray-800 text-base" style="font-family: 'Playfair Display', serif;">¡Gracias por confiar en Radiant Events!</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CURRENCY FUNCTIONS ---
+            const formatCurrency = (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+            const parseCurrency = (value) => Number(String(value).replace(/[\$\.\s]/g, '')) || 0;
+
+            // --- DOM ELEMENTS ---
+            const tableBody = document.getElementById('services-table').getElementsByTagName('tbody')[0];
+            const subtotalEl = document.getElementById('subtotal');
+            const totalEl = document.getElementById('total');
+
+            // --- TABLE LOGIC ---
+            const updateRowTotal = (row) => {
+                const quantity = parseCurrency(row.cells[1].textContent);
+                const price = parseCurrency(row.cells[2].textContent);
+                row.cells[3].textContent = formatCurrency(quantity * price);
+            };
+
+            const updateTotals = () => {
+                let subtotal = 0;
+                tableBody.querySelectorAll("tr.service-row").forEach(row => {
+                    updateRowTotal(row);
+                    subtotal += parseCurrency(row.cells[3].textContent);
+                });
+                const total = subtotal; // Total is now the subtotal
+                subtotalEl.textContent = formatCurrency(subtotal);
+                totalEl.textContent = formatCurrency(total);
+            };
+
+            const addRow = (isCategory = false) => {
+                const newRow = tableBody.insertRow();
+                if (isCategory) {
+                    newRow.className = 'bg-gray-100 font-bold';
+                    newRow.innerHTML = `
+                        <td colspan="4" class="px-6 py-3 text-gray-800" contenteditable="true">Nueva Categoría</td>
+                        <td class="px-2 py-3 text-center no-print"><button class="delete-row text-red-500 hover:text-red-700 font-bold text-lg">&times;</button></td>`;
+                } else {
+                    newRow.className = 'service-row';
+                    newRow.innerHTML = `
+                        <td class="px-6 py-4" contenteditable="true"></td>
+                        <td class="px-6 py-4 text-right" contenteditable="true">1</td>
+                        <td class="px-6 py-4 text-right" contenteditable="true">${formatCurrency(0)}</td>
+                        <td class="px-6 py-4 text-right font-semibold text-gray-800"></td>
+                        <td class="px-2 py-4 text-center no-print"><button class="delete-row text-red-500 hover:text-red-700 font-bold text-lg">&times;</button></td>`;
+                }
+                updateTotals();
+            };
+            
+            // --- EVENT LISTENERS ---
+            document.getElementById('add-row').addEventListener('click', () => addRow(false));
+            document.getElementById('add-category').addEventListener('click', () => addRow(true));
+            
+            tableBody.addEventListener('click', (e) => {
+                if (e.target.classList.contains('delete-row')) {
+                    e.target.closest('tr').remove();
+                    updateTotals();
+                }
+            });
+
+            tableBody.addEventListener('input', updateTotals);
+
+            // --- INITIALIZATION ---
+            const loadInitialData = () => {
+                document.getElementById('quote-date').textContent = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+                addRow(true); // Start with a category row
+                addRow(false); // Start with one empty service row
+                const categoryCell = tableBody.querySelector("tr:first-child td");
+                if(categoryCell) categoryCell.textContent = "Mobiliario y Mantelería";
+                updateTotals();
+            };
+
+            loadInitialData();
+        });
+    </script>
+</body>
+</html>
